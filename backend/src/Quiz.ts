@@ -26,7 +26,7 @@ interface Problem {
   option: {
     id: number;
     title: string;
-  };
+  }[]
   submissions: Submission[];
 }
 
@@ -49,13 +49,15 @@ export class Quiz {
 
   addProblem(problem: Problem) {
     this.problems.push(problem);
+    console.log(this.problems);
+    
   }
 
   start() {
     this.hasStarted = true;
     const io = IoManager.getIo();
-
     this.setActiveProblem(this.problems[0]);
+    
   }
 
   setActiveProblem(problem: Problem) {
