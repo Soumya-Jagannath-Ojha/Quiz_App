@@ -5,6 +5,7 @@ const server = http.createServer();
 export class IoManager {
   private static io: Server;
 
+  // singleton
   public static getIo() {
     if (!this.io) {
       const io = new Server(server);
