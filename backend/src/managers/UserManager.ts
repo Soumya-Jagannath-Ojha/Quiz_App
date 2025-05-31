@@ -39,10 +39,14 @@ export class UserManager {
            socket.emit("adminInit",{
             userId,
             state: this.quizManager.getCurrentState(roomId)
-           })
+           });
+
+           socket.on("createQuiz", (data)=>{
+                this.quizManager.addProblem(data.roomId, data.problem);
+           });
 
            socket.on("createProblem", (data)=>{
-                this.quizManager.addProblem(data.roomId, data.problem);
+                this.quizManager.addQuiz(data.roomId);
            });
 
            socket.on("next", (data)=>{
