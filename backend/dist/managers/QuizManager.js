@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.QuizManager = void 0;
+const Quiz_1 = require("../Quiz");
 let globalProblemId = 0;
 class QuizManager {
     constructor() {
@@ -45,6 +46,13 @@ class QuizManager {
             return null;
         }
         return quiz.getCurrentState();
+    }
+    addQuiz(roomId) {
+        if (this.getQuiz(roomId)) {
+            return;
+        }
+        const quiz = new Quiz_1.Quiz(roomId);
+        this.quizes.push(quiz);
     }
 }
 exports.QuizManager = QuizManager;

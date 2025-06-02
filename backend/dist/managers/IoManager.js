@@ -11,7 +11,12 @@ class IoManager {
     // singleton
     static getIo() {
         if (!this.io) {
-            const io = new socket_io_1.Server(server);
+            const io = new socket_io_1.Server(server, {
+                cors: {
+                    origin: "*",
+                    methods: ["GET", "POST"]
+                }
+            });
             this.io = io;
         }
         return this.io;

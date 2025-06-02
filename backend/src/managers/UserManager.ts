@@ -3,46 +3,44 @@ import { QuizManager } from "./QuizManager";
 const ADMIN_PASSWORD = "ADMIN_PASSWORD"
 
 export class UserManager {
-    private users: {
-        roomId: string;
-        socket: Socket;
-    }[];
+    // private users: {
+    //     roomId: string;
+    //     socket: Socket;
+    // }[];
     private quizManager;
 
     constructor(){
-        this.users = [];
+        // this.users = [];
         this.quizManager = new QuizManager();
     }
 
-    addUser(roomId: string, socket: Socket){
-        this.users.push({
-            socket,roomId
-        })
-        this.createHandlers(roomId, socket);
+    addUser(socket: Socket){
+        
+        this.createHandlers( socket);
     }
 
-    private createHandlers(roomId: string, socket: Socket){
+    private createHandlers( socket: Socket){
         socket.on("join",(data)=>{
            const userId = this.quizManager.addUser(data.roomId, data.name);
            socket.emit("init",{
             userId,
-            state: this.quizManager.getCurrentState(roomId)
+            state: this.quizManager.getCurrentState(data.roomId)
            })
 
         });
 
-        socket.on("join_admin",(data)=>{
-           const userId = this.quizManager.addUser(data.roomId, data.name);
+        socket.on("joinAdmin",(data)=>{
+        //    const userId = this.quizManager.addUser(data.roomId, data.name);
+        
+        
            if (data.password !== ADMIN_PASSWORD) {
                 return;
            }
-           socket.emit("adminInit",{
-            userId,
-            state: this.quizManager.getCurrentState(roomId)
-           });
+           
 
            socket.on("createQuiz", (data)=>{
-                this.quizManager.addProblem(data.roomId, data.problem);
+                // this.quizManager.addProblem(data.roomId, data.problem);
+                this.quizManager.addQuiz(data.roomId);
            });
 
            socket.on("createProblem", (data)=>{

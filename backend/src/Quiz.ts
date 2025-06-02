@@ -20,7 +20,7 @@ interface Problem {
   id: string;
   title: string;
   description: string;
-  image: string;
+  image?: string;
   startTime: number;
   answer: AllowedSubmission; //0,1,2,3
   option: {
@@ -45,6 +45,21 @@ export class Quiz {
     this.activeProblem = 0;
     this.users = [];
     this.currentState = "not_started";
+    setInterval(()=>{
+      this.debug();
+    },1000)
+  }
+
+  debug(){
+    console.log("----debug----");
+    console.log(this.roomId);
+    console.log(JSON.stringify(this.problems));
+    console.log(this.users);
+    console.log(this.currentState);
+    console.log(this.activeProblem);
+    
+    
+    
   }
 
   addProblem(problem: Problem) {
@@ -61,6 +76,7 @@ export class Quiz {
   }
 
   setActiveProblem(problem: Problem) {
+    this.currentState = "question";
     problem.startTime = new Date().getTime();
     problem.submissions = [];
     IoManager.getIo().emit("CHANGE_PROBLEM", {
@@ -74,6 +90,7 @@ export class Quiz {
   }
 
   sendLeaderboard() {
+    this.currentState = "leaderboard";
     const leaderboard = this.getLeaderboard();
     IoManager.getIo().to(this.roomId).emit("leaderboard", {
       leaderboard,
