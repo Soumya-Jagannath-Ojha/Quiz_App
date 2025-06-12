@@ -11,9 +11,10 @@ class Quiz {
         this.activeProblem = 0;
         this.users = [];
         this.currentState = "not_started";
+        console.log("room created");
         setInterval(() => {
             this.debug();
-        }, 1000);
+        }, 10000);
     }
     debug() {
         console.log("----debug----");
@@ -29,22 +30,28 @@ class Quiz {
     }
     start() {
         this.hasStarted = true;
-        const io = IoManager_1.IoManager.getIo();
+        // const io = IoManager.getIo();
+        console.log("inside start");
         this.setActiveProblem(this.problems[0]);
     }
     setActiveProblem(problem) {
+        console.log("set active problem");
         this.currentState = "question";
         problem.startTime = new Date().getTime();
         problem.submissions = [];
         IoManager_1.IoManager.getIo().emit("CHANGE_PROBLEM", {
             problem,
         });
+        // IoManager.getIo().to(this.roomId).emit("problem", {
+        //   problem,
+        // });
         // Todo: clear this if function moves ahead
         setTimeout(() => {
             this.sendLeaderboard();
         }, PROBLEM_TIME_S * 1000);
     }
     sendLeaderboard() {
+        console.log("send leaderboard");
         this.currentState = "leaderboard";
         const leaderboard = this.getLeaderboard();
         IoManager_1.IoManager.getIo().to(this.roomId).emit("leaderboard", {
@@ -52,17 +59,21 @@ class Quiz {
         });
     }
     next() {
+        console.log("inside next");
         this.activeProblem++;
         const problem = this.problems[this.activeProblem];
+        console.log("problem is here" + problem);
         if (problem) {
             // problem.startTime = new Date().getTime();
             this.setActiveProblem(problem);
+            console.log("problem is here" + problem);
         }
         else {
             // send final results here
             IoManager_1.IoManager.getIo().emit("QUIZ_END", {
                 problem,
             });
+            // this.activeProblem--;
         }
     }
     genRandomString(length) {
@@ -129,7 +140,7 @@ class Quiz {
             const problem = this.problems[this.activeProblem];
             return {
                 type: "question",
-                problem
+                problem,
             };
         }
     }

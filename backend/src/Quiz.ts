@@ -26,7 +26,7 @@ interface Problem {
   option: {
     id: number;
     title: string;
-  }[]
+  }[];
   submissions: Submission[];
 }
 
@@ -45,43 +45,47 @@ export class Quiz {
     this.activeProblem = 0;
     this.users = [];
     this.currentState = "not_started";
-    setInterval(()=>{
+    console.log("room created");
+
+    setInterval(() => {
       this.debug();
-    },1000)
+    }, 10000);
   }
 
-  debug(){
+  debug() {
     console.log("----debug----");
     console.log(this.roomId);
     console.log(JSON.stringify(this.problems));
     console.log(this.users);
     console.log(this.currentState);
     console.log(this.activeProblem);
-    
-    
-    
   }
 
   addProblem(problem: Problem) {
     this.problems.push(problem);
     console.log(this.problems);
-    
   }
 
   start() {
     this.hasStarted = true;
-    const io = IoManager.getIo();
+    // const io = IoManager.getIo();
+    console.log("inside start");
+
     this.setActiveProblem(this.problems[0]);
-    
   }
 
   setActiveProblem(problem: Problem) {
+    console.log("set active problem");
+
     this.currentState = "question";
     problem.startTime = new Date().getTime();
     problem.submissions = [];
     IoManager.getIo().emit("CHANGE_PROBLEM", {
       problem,
     });
+    // IoManager.getIo().to(this.roomId).emit("problem", {
+    //   problem,
+    // });
 
     // Todo: clear this if function moves ahead
     setTimeout(() => {
@@ -89,7 +93,9 @@ export class Quiz {
     }, PROBLEM_TIME_S * 1000);
   }
 
-  sendLeaderboard() {
+   sendLeaderboard() {
+    console.log("send leaderboard");
+
     this.currentState = "leaderboard";
     const leaderboard = this.getLeaderboard();
     IoManager.getIo().to(this.roomId).emit("leaderboard", {
@@ -98,16 +104,23 @@ export class Quiz {
   }
 
   next() {
+    console.log("inside next");
+
     this.activeProblem++;
     const problem = this.problems[this.activeProblem];
+    console.log("problem is here" + problem);
+
     if (problem) {
       // problem.startTime = new Date().getTime();
       this.setActiveProblem(problem);
+      console.log("problem is here" + problem);
     } else {
       // send final results here
       IoManager.getIo().emit("QUIZ_END", {
         problem,
       });
+
+      // this.activeProblem--;
     }
   }
 
@@ -191,9 +204,8 @@ export class Quiz {
       const problem = this.problems[this.activeProblem];
       return {
         type: "question",
-        problem
+        problem,
       };
     }
-
   }
 }

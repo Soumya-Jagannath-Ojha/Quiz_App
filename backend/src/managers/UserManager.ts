@@ -1,68 +1,70 @@
 import { Socket } from "socket.io";
 import { QuizManager } from "./QuizManager";
-const ADMIN_PASSWORD = "ADMIN_PASSWORD"
+const ADMIN_PASSWORD = "ADMIN_PASSWORD";
 
 export class UserManager {
-    // private users: {
-    //     roomId: string;
-    //     socket: Socket;
-    // }[];
-    private quizManager;
+  private quizManager;
 
-    constructor(){
-        // this.users = [];
-        this.quizManager = new QuizManager();
-    }
+  constructor() {
+    this.quizManager = new QuizManager();
+  }
 
-    addUser(socket: Socket){
-        
-        this.createHandlers( socket);
-    }
+  addUser(socket: Socket) {
+    this.createHandlers(socket);
+  }
 
-    private createHandlers( socket: Socket){
-        socket.on("join",(data)=>{
-           const userId = this.quizManager.addUser(data.roomId, data.name);
-           socket.emit("init",{
-            userId,
-            state: this.quizManager.getCurrentState(data.roomId)
-           })
+  private createHandlers(socket: Socket) {
+    socket.on("join", (data) => {
+      const userId = this.quizManager.addUser(data.roomId, data.name);
+      socket.emit("init", {
+        //userId
+        userId,
+        state: this.quizManager.getCurrentState(data.roomId),
+      });
+    //   socket.join(data.roomId)
+    });
 
-        });
+    socket.on("joinAdmin", (data) => {
+      //    const userId = this.quizManager.addUser(data.roomId, data.name);
 
-        socket.on("joinAdmin",(data)=>{
-        //    const userId = this.quizManager.addUser(data.roomId, data.name);
-        
-        
-           if (data.password !== ADMIN_PASSWORD) {
-                return;
-           }
-           
+      if (data.password !== ADMIN_PASSWORD) {
+        return;
+      }
 
-           socket.on("createQuiz", (data)=>{
-                // this.quizManager.addProblem(data.roomId, data.problem);
-                this.quizManager.addQuiz(data.roomId);
-           });
+    //   socket.emit("adminInit",{
+    //     userId,
+    //     state: this.quizManager.getCurrentState(roomId)
+    //   })
 
-           socket.on("createProblem", (data)=>{
-                this.quizManager.addQuiz(data.roomId);
-           });
+      socket.on("createQuiz", (data) => {
+        // this.quizManager.addProblem(data.roomId, data.problem);
+        this.quizManager.addQuiz(data.roomId);
+      });
 
-           socket.on("next", (data)=>{
-                this.quizManager.next(data.roomId);
-           })
+      socket.on("createProblem", (data) => {
+        this.quizManager.addProblem(data.roomId, data.problem);
+      });
 
-        });
+      socket.on("next", (data) => {
+        this.quizManager.next(data.roomId);
+      });
+    });
 
-        socket.on("submit",(data)=>{
-            const userId = data.userId;
-            const problemId = data.problemId;
-            const submission = data.submission;
-            const roomId = data.submission;
-            if(submission != 0 || submission != 1 || submission != 2 || submission != 3 ){
-                console.error("issue while getting input "+ submission);
-                return;
-            }
-            this.quizManager.submit(userId,roomId,problemId,submission);
-        })
-    }
+    socket.on("submit", (data) => {
+      const userId = data.userId;
+      const problemId = data.problemId;
+      const submission = data.submission;
+      const roomId = data.submission;
+      if (
+        submission != 0 ||
+        submission != 1 ||
+        submission != 2 ||
+        submission != 3
+      ) {
+        console.error("issue while getting input " + submission);
+        return;
+      }
+      this.quizManager.submit(userId, roomId, problemId, submission);
+    });
+  }
 }

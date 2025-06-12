@@ -41,10 +41,13 @@ class QuizManager {
         return (_a = this.quizes.find((x) => x.roomId === roomId)) !== null && _a !== void 0 ? _a : null;
     }
     getCurrentState(roomId) {
+        console.log("inside the current state");
         const quiz = this.quizes.find((x) => x.roomId === roomId);
         if (!quiz) {
+            console.log("current state is not present");
             return null;
         }
+        console.log("quiz" + quiz);
         return quiz.getCurrentState();
     }
     addQuiz(roomId) {

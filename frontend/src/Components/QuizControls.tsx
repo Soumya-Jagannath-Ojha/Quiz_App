@@ -1,4 +1,3 @@
-import React from 'react'
 
 const QuizControls = ({socket, roomId}: {socket: any, roomId: string}) => {
   return (
@@ -10,7 +9,7 @@ const QuizControls = ({socket, roomId}: {socket: any, roomId: string}) => {
                 
             })
         }}>
-
+          Next Problem
         </button>
     </div>
   )

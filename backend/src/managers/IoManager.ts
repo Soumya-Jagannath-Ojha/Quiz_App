@@ -9,9 +9,9 @@ export class IoManager {
   public static getIo() {
     if (!this.io) {
       const io = new Server(server, {
-        cors:{
+        cors: {
           origin:"*",
-          methods:["GET","POST"]
+          methods: ["GET","POST"]
         }
       });
       this.io = io;

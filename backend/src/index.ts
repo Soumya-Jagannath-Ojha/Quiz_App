@@ -8,7 +8,9 @@ const io = IoManager.getIo();
 // const IoManager = new IoManager(io);
 const userManager =  new UserManager;
 
-io.on('connection', socket => {
+io.listen(3000);
+
+io.on('connection', (socket) => {
   // client.on('event', data => { 
   //   console.log(data);
   //   const type = data.type;
@@ -22,4 +24,3 @@ io.on('connection', socket => {
 
 });
 // client.on('disconnect', () => { /* … */ });
-io.listen(3000);

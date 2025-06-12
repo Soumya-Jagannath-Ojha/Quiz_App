@@ -41,10 +41,14 @@ export class QuizManager {
   }
 
   public next(roomId: string) {
+    
     const quiz = this.getQuiz(roomId);
+    
     if (!quiz) {
+      
       return;
     }
+    
     quiz.next();
   }
   addUser(roomId: string, name: string) {
@@ -64,10 +68,16 @@ export class QuizManager {
   }
 
   getCurrentState(roomId: string) {
+    console.log("inside the current state");
     const quiz = this.quizes.find((x) => x.roomId === roomId);
+    
     if (!quiz) {
+      console.log("current state is not present");
+      
       return null;
     }
+    console.log("quiz" + quiz);
+    
 
     return quiz.getCurrentState();
   }

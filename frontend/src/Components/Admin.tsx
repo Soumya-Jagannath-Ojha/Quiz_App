@@ -16,12 +16,13 @@ const Admin = () => {
     const socket = io("http://localhost:3000");
     setSocket(socket);
     socket.on("connect", ()=>{
+      // alert("connected")
       console.log(socket.id);
       socket.emit("joinAdmin",{
         password: "ADMIN_PASSWORD"
       })
     })
-  })
+  },[])
 
 
   if(!quizId){
